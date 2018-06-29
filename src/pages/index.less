@@ -4,11 +4,9 @@
 .page_index {
   min-height: 2000px;
   :global {
-    #fake_input {
-      outline: none;
-      z-index: -1;
+    .fake_input {
       position: absolute;
-      right: 100000px;
+      right: 999999px;
     }
 
     .logo {
@@ -98,9 +96,15 @@
 
     .cell_wrap {
       position: relative;
+    }
 
-      padding-left: 50px;
-      padding-right: 50px;
+    @media (min-width: 768px) {
+      .cell_wrap {
+        position: relative;
+
+        padding-left: 50px;
+        padding-right: 50px;
+      }
     }
 
     .avatar {

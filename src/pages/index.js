@@ -247,8 +247,6 @@ export default class Index extends React.Component {
           </div>
         </div>
 
-        <input type="text" id="fake_input" />
-
         <div className="container-fluid cell_container">
           <QueueAnim
             interval={0}
@@ -282,6 +280,7 @@ export default class Index extends React.Component {
                     <div className="cell-content">
                       <ol>{(item.descs || []).map((it, k) => <li key={k}>{it}</li>)}</ol>
                     </div>
+                    <input className="fake_input" type="text" id={'fake_input' + item.id} />
                     <div className="cell-actions">
                       <div
                         className="cell-actions-item"
@@ -300,7 +299,7 @@ export default class Index extends React.Component {
                           this.query.search = item.title;
                           this.copy(
                             window.location.href + '?' + qs.stringify(this.query),
-                            'fake_input'
+                            'fake_input' + item.id
                           );
                         }}
                       >
