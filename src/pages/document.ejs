@@ -14,15 +14,9 @@
     <script src="<%= process.env.PUBLIC_PATH %>bootstrap.min.js"></script>
     <!-- <script src="<%= process.env.PUBLIC_PATH %>ZeroClipboard.min.js"></script> -->
     <!-- <script src="<%= process.env.PUBLIC_PATH %>ZeroClipboard.swf"></script> -->
-    <script>
-        var _hmt = _hmt || [];
-        (function () {
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?be8c39154477e75ec3ffa8c89fbe106d";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
+    <% if (process.env.NODE_ENV !== 'development') { %>
+        <script> var _hmt = _hmt || []; (function () { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?be8c39154477e75ec3ffa8c89fbe106d"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s); })(); </script> 
+    <% } %>
 </head>
 
 <body>
