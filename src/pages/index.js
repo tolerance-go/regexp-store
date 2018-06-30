@@ -4,6 +4,9 @@ import styles from './index.less';
 import classnames from 'classnames';
 import QueueAnim from 'rc-queue-anim';
 import qs from 'qs';
+import request from 'request';
+import regexs from '../assets/regexs';
+import unionBy from 'lodash.unionby';
 
 export default class Index extends React.Component {
   state = {
@@ -14,12 +17,46 @@ export default class Index extends React.Component {
     show_data_ource: [],
     data_source: require('../assets/regexs').default.map((item, index) => {
       item.id = index;
-      item.username = 'wyatt';
       return item;
     }),
+    user_infos: {},
   };
 
   componentDidMount = () => {
+    Promise.all(
+      unionBy(regexs, 'author').map(item => {
+        return item.author
+          ? new Promise((resolve, reject) => {
+              try {
+                request(item.author, function(error, response, body) {
+                  resolve({
+                    code: response && response.statusCode,
+                    body,
+                    author: item.author,
+                  });
+                });
+              } catch (err) {
+                resolve({ code: 200 });
+              }
+            })
+          : Promise.resolve({
+              code: 200,
+              nickname: item.nickname,
+              avatar: item.avatar,
+            });
+      })
+    ).then(results => {
+      const user_infos = results.filter(item => item.code === 200).reduce((local, meta) => {
+        const { body, author } = meta;
+        const $body = $(body);
+        const avatar = meta.avatar || $body.find('.avatar.rounded-2').prop('src');
+        const nickname = meta.nickname || $body.find('.p-name.vcard-fullname').text();
+        local[author] = { avatar, nickname };
+        return local;
+      }, {});
+      this.setState({ user_infos });
+    });
+
     const demo = `/Hello word/ig.test('hello word')`;
     this.copy(demo);
     this.exec(demo);
@@ -42,11 +79,13 @@ export default class Index extends React.Component {
     try {
       // eslint-disable-next-line
       const result = eval(input);
-      const [regex, params] = input.split('.test')
+      const [regex, params] = input.split('.test');
 
       this.setState({
         results: this.state.results.concat({
-          content: `${regex.length > 30 ? regex.slice(0, 10) + ' ... ' + regex.slice(-10) : regex}.test${params} => ${result}`,
+          content: `${
+            regex.length > 30 ? regex.slice(0, 10) + ' ... ' + regex.slice(-10) : regex
+          }.test${params} => ${result}`,
           timestamp: new Date().getTime(),
         }),
       });
@@ -106,18 +145,27 @@ export default class Index extends React.Component {
       <div className={styles.page_index}>
         <nav className="nav justify-content-end">
           <a
+            target="_blank"
+            rel="noopener noreferrer"
             className="nav-link active"
             href="https://github.com/zeeshanu/learn-regex/blob/master/README-cn.md"
           >
             Learn
           </a>
-          <a className="nav-link disabled" href="">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link"
+            href="https://github.com/tolerance-go/regexp-store/edit/master/src/assets/regexs.js"
+          >
             Upload
           </a>
-          <a className="nav-link disabled" href="">
-            Zone
-          </a>
-          <a className="nav-link" href="https://github.com/tolerance-go/regexp-store">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link"
+            href="https://github.com/tolerance-go/regexp-store"
+          >
             Github
           </a>
         </nav>
@@ -213,8 +261,23 @@ export default class Index extends React.Component {
                         });
                       }}
                     >
-                      <img src={require('../assets/imgs/duck.jpg')} alt="" className="avatar-img" />
-                      <div className="avatar-name"> {item.username}</div>
+                      <img
+                        src={
+                          this.state.user_infos[item.author] &&
+                          this.state.user_infos[item.author].avatar
+                        }
+                        onClick={() => {
+                          if (item.author) {
+                            window.open(item.author);
+                          }
+                        }}
+                        alt=""
+                        className="avatar-img"
+                      />
+                      <div className="avatar-name">
+                        {this.state.user_infos[item.author] &&
+                          this.state.user_infos[item.author].nickname}
+                      </div>
                     </div>
                     <h5>{item.title}</h5>
                     <div className="cell-content">
