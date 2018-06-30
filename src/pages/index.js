@@ -12,82 +12,7 @@ export default class Index extends React.Component {
     regs: [],
     search_num: 0,
     show_data_ource: [],
-    data_source: [
-      {
-        title: '匹配中文字符',
-        // eslint-disable-next-line
-        regex: /[\u4e00-\u9fa5]/,
-      },
-      {
-        title: '匹配双字节字符',
-        // eslint-disable-next-line
-        descs: ['包括汉字在内'],
-        regex: /[^\x00-\xff]/,
-      },
-      {
-        title: '匹配空白行',
-        // eslint-disable-next-line
-        regex: /\n\s*\r/,
-      },
-      {
-        title: '匹配Email地址',
-        // eslint-disable-next-line
-        regex: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-      },
-      {
-        title: '匹配网址URL',
-        // eslint-disable-next-line
-        regex: /[a-zA-z]+:\/\/[^\s]*/,
-      },
-      {
-        title: '匹配国内电话号码',
-        regex: /\d{3}-\d{8}|\d{4}-\{7,8}/,
-      },
-      {
-        title: '匹配QQ号',
-        regex: /[1-9][0-9]{4,}/,
-      },
-      {
-        title: '匹配中国邮政编码',
-        regex: /[1-9]\d{5}(?!\d)/,
-      },
-      {
-        title: '匹配18位身份证号',
-        regex: /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/,
-      },
-      {
-        title: '匹配(年-月-日)格式日期',
-        regex: /([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8])))/,
-      },
-      {
-        title: '匹配正整数',
-        regex: /^[1-9]\d*$/,
-      },
-      {
-        title: '匹配负整数',
-        regex: /^-[1-9]\d*$/,
-      },
-      {
-        title: '匹配整数',
-        regex: /^-?[1-9]\d*$/,
-      },
-      {
-        title: '匹配非负整数（正整数 + 0）',
-        regex: /^[1-9]\d*|0$/,
-      },
-      {
-        title: '匹配非正整数（负整数 + 0）',
-        regex: /^-[1-9]\d*|0$/,
-      },
-      {
-        title: '匹配正浮点数',
-        regex: /^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/,
-      },
-      {
-        title: '匹配负浮点数',
-        regex: /^-[1-9]\d*\.\d*|-0\.\d*[1-9]\d*$/,
-      },
-    ].map((item, index) => {
+    data_source: require('../assets/regexs').default.map((item, index) => {
       item.id = index;
       item.username = 'wyatt';
       return item;
@@ -117,9 +42,11 @@ export default class Index extends React.Component {
     try {
       // eslint-disable-next-line
       const result = eval(input);
+      const [regex, params] = input.split('.test')
+
       this.setState({
         results: this.state.results.concat({
-          content: `${input.split('test')[1]} => ${result}`,
+          content: `${regex.length > 30 ? regex.slice(0, 10) + ' ... ' + regex.slice(-10) : regex}.test${params} => ${result}`,
           timestamp: new Date().getTime(),
         }),
       });
@@ -158,10 +85,20 @@ export default class Index extends React.Component {
 
   copy = (regex, id = 'input') => {
     const input = document.getElementById(id);
-    console.log(regex, input);
     input.value = regex; // 修改文本框的内容
     input.select(); // 选中文本
     document.execCommand('copy'); // 执行浏览器复制命令
+  };
+
+  toggleTooltip = id => {
+    const $item = $(id);
+    $item.tooltip('enable');
+    $item.tooltip('show');
+    setTimeout(() => {
+      $item.tooltip('hide');
+      $item.tooltip('disable');
+    }, 1000);
+    return $item;
   };
 
   render() {
@@ -292,16 +229,14 @@ export default class Index extends React.Component {
                         data-trigger="manual"
                         id={'share_' + item.id}
                         onClick={() => {
-                          const $item = $('#share_' + item.id);
-                          $item.tooltip('enable');
-                          $item.tooltip('show');
-                          setTimeout(() => {
-                            $item.tooltip('hide');
-                            $item.tooltip('disable');
-                          }, 1000);
-                          this.query.search = item.title;
+                          this.toggleTooltip('#share_' + item.id);
                           this.copy(
-                            window.location.href + '?' + qs.stringify(this.query),
+                            window.location.href +
+                              '?' +
+                              qs.stringify({
+                                ...this.query,
+                                search: item.title,
+                              }),
                             'fake_input' + item.id
                           );
                         }}
@@ -320,14 +255,9 @@ export default class Index extends React.Component {
                         data-trigger="manual"
                         id={'action_' + item.id}
                         onClick={() => {
-                          const $item = $('#action_' + item.id);
-                          $item.tooltip('enable');
-                          $item.tooltip('show');
-                          setTimeout(() => {
-                            $item.tooltip('hide');
-                            $item.tooltip('disable');
-                          }, 1000);
+                          this.toggleTooltip('#action_' + item.id);
                           this.copy(item.regex);
+                          document.getElementById('input').scrollIntoViewIfNeeded(true);
                         }}
                       >
                         <img
