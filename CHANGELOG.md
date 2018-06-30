@@ -1,3 +1,14 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/tolerance-go/regexp-store/compare/v0.3.0...v0.4.0) (2018-06-30)
+
+
+### Features
+
+* 完善贡献逻辑，主动抓取github主页 ([d236518](https://github.com/tolerance-go/regexp-store/commit/d236518))
+* 点击头像可以跳转到贡献者github主页 ([e146a18](https://github.com/tolerance-go/regexp-store/commit/e146a18))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/tolerance-go/regexp-store/compare/v0.2.0...v0.3.0) (2018-06-30)
 
