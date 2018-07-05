@@ -203,6 +203,16 @@ export default class Index extends React.Component {
   render() {
     return (
       <div className={styles.page_index}>
+        <div
+          className="alert alert-primary"
+          role="alert"
+          style={{
+            borderRadius: 0,
+          }}
+        >
+          https服务域名正在备案中，期间全站点赞，正则作者信息展示功能无法正常使用
+        </div>
+
         <div className="container-fluid">
           <nav className="nav justify-content-end">
             <a
