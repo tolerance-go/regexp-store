@@ -1,3 +1,26 @@
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/tolerance-go/regexp-store/compare/v0.4.0...v0.5.0) (2018-07-05)
+
+
+### Bug Fixes
+
+* 开发环境，去除统计代码 ([04bf380](https://github.com/tolerance-go/regexp-store/commit/04bf380))
+
+
+### Features
+
+* 增加 action bar fixed，方便使用 ([a7086fd](https://github.com/tolerance-go/regexp-store/commit/a7086fd))
+* 增加 jsonp，头像点赞信息服务器拉取 ([682a0b4](https://github.com/tolerance-go/regexp-store/commit/682a0b4))
+* 增加批量删除result结果按钮 ([6e69753](https://github.com/tolerance-go/regexp-store/commit/6e69753))
+* 增加首次加载loading动效 ([7daf312](https://github.com/tolerance-go/regexp-store/commit/7daf312))
+
+
+### Performance Improvements
+
+* 调整 loading 样式 ([8f307f6](https://github.com/tolerance-go/regexp-store/commit/8f307f6))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/tolerance-go/regexp-store/compare/v0.3.0...v0.4.0) (2018-06-30)
 
