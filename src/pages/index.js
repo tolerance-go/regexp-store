@@ -4,9 +4,14 @@ import styles from './index.less';
 import classnames from 'classnames';
 import QueueAnim from 'rc-queue-anim';
 import qs from 'qs';
-import request from 'request';
 import regexs from '../assets/regexs';
 import unionBy from 'lodash.unionby';
+import request from '../request';
+
+const api_base =
+  process.env.NODE_ENV === 'development'
+    ? 'http://127.0.0.1:7001/'
+    : 'https://www.regexp-server.top';
 
 export default class Index extends React.Component {
   state = {
@@ -22,44 +27,18 @@ export default class Index extends React.Component {
     user_infos: {},
   };
 
-  componentDidMount = () => {
-    Promise.all(
-      unionBy(regexs, 'author').map(item => {
-        return item.author
-          ? new Promise((resolve, reject) => {
-              try {
-                request(item.author, function(error, response, body) {
-                  resolve({
-                    code: response && response.statusCode,
-                    body,
-                    author: item.author,
-                  });
-                });
-              } catch (err) {
-                resolve({ code: 200 });
-              }
-            })
-          : Promise.resolve({
-              code: 200,
-              nickname: item.nickname,
-              avatar: item.avatar,
-            });
-      })
-    ).then(results => {
-      const user_infos = results.filter(item => item.code === 200).reduce((local, meta) => {
-        const { body, author } = meta;
-        const $body = $(body);
-        const avatar = meta.avatar || $body.find('.avatar.rounded-2').prop('src');
-        const nickname = meta.nickname || $body.find('.p-name.vcard-fullname').text();
-        local[author] = { avatar, nickname };
-        return local;
-      }, {});
-      this.setState({ user_infos });
-    });
+  like_num_cache = {};
 
-    const demo = `/Hello word/ig.test('hello word')`;
-    this.copy(demo);
-    this.exec(demo);
+  componentDidMount = () => {
+    $('#operator').scrollToFixed({ marginTop: 10 });
+
+    this.fetch_user();
+
+    const demo_regexp = String(/Hello word/gi);
+    const demo_params = JSON.stringify('hello word');
+    this.copy(demo_params, 'input_params');
+    this.copy(demo_regexp, 'input_regexp');
+    this.exec(demo_regexp, demo_params);
 
     const query = (this.query = qs.parse(window.location.href.split('?')[1]));
     if (query.search) {
@@ -68,24 +47,100 @@ export default class Index extends React.Component {
     this.onSearch();
   };
 
-  onConsolePress = e => {
-    if (e.keyCode === 13) {
-      const input = e.currentTarget.value;
-      this.exec(input);
+  fetch_like_num = async () => {
+    const { show_data_ource } = this.state;
+    const results = await Promise.all(
+      show_data_ource.map(item => {
+        if (this.like_num_cache[item.id]) {
+          return Promise.resolve({
+            success: true,
+            data: this.like_num_cache[item.id],
+          });
+        }
+        return request(api_base + 'like', {
+          jsonp: true,
+          params: {
+            id: item.id,
+          },
+        }).then(result => {
+          Object.assign(result.data, item);
+          this.like_num_cache[result.data.id] = result.data;
+          return result;
+        });
+      })
+    );
+
+    if (results.every(item => item.success)) {
+      this.setState({
+        show_data_ource: results.map(item => item.data).sort((a, b) => {
+          return b.like_num - a.like_num;
+        }),
+      });
     }
   };
 
-  exec = input => {
+  fetch_user = async () => {
+    const authors = regexs.map(item => item.author).filter(item => !!item);
+    const { success, data: profiles } = await request({
+      url: api_base + 'github_user_infos',
+      jsonp: true,
+      params: {
+        urls: unionBy(authors, 'author'),
+      },
+    });
+
+    if (success) {
+      const user_infos = profiles.reduce((local, meta) => {
+        const { avatar, username, author } = meta;
+        local[author] = { avatar, username };
+        return local;
+      }, {});
+
+      this.setState({ user_infos });
+    }
+  };
+
+  on_like = async id => {
+    const is_increment = !JSON.parse(localStorage.getItem(id + '_has_like'));
+    const { success, data } = await request({
+      url: api_base + 'like_change',
+      jsonp: true,
+      params: {
+        id,
+        type: is_increment ? 'increment' : 'decrement',
+      },
+    });
+    if (success) {
+      this.setState({
+        show_data_ource: this.state.show_data_ource.map(item => {
+          if (item.id === id) {
+            item.like_num = data.like_num;
+          }
+          return item;
+        }),
+      });
+      localStorage.setItem(id + '_has_like', is_increment);
+    }
+  };
+
+  onConsolePress = e => {
+    if (e.keyCode === 13) {
+      this.exec();
+    }
+  };
+
+  exec = (p_regex, p_params) => {
     try {
+      const regex = p_regex || document.getElementById('input_regexp').value;
+      const params = p_params || document.getElementById('input_params').value;
       // eslint-disable-next-line
-      const result = eval(input);
-      const [regex, params] = input.split('.test');
+      const result = eval(regex + '.test(' + params + ')');
 
       this.setState({
         results: this.state.results.concat({
           content: `${
-            regex.length > 30 ? regex.slice(0, 10) + ' ... ' + regex.slice(-10) : regex
-          }.test${params} => ${result}`,
+            regex.length > 40 ? regex.slice(0, 15) + ' ... ' + regex.slice(-15) : regex
+          }.test(${params}) => ${result}`,
           timestamp: new Date().getTime(),
         }),
       });
@@ -106,23 +161,28 @@ export default class Index extends React.Component {
       },
       () => {
         setTimeout(() => {
-          this.setState({
-            show_data_ource: search
-              ? this.state.data_source.filter(item => {
-                  if (item.title.match(new RegExp(search, 'ig'))) {
-                    return true;
-                  }
-                  return false;
-                })
-              : this.state.data_source,
-          });
+          this.setState(
+            {
+              show_data_ource: search
+                ? this.state.data_source.filter(item => {
+                    if (item.title.match(new RegExp(search, 'ig'))) {
+                      return true;
+                    }
+                    return false;
+                  })
+                : this.state.data_source,
+            },
+            () => {
+              this.fetch_like_num();
+            }
+          );
           // https://motion.ant.design/api/queue-anim
         }, old_len * 0 + 450 + 50);
       }
     );
   };
 
-  copy = (regex, id = 'input') => {
+  copy = (regex, id) => {
     const input = document.getElementById(id);
     input.value = regex; // 修改文本框的内容
     input.select(); // 选中文本
@@ -143,93 +203,104 @@ export default class Index extends React.Component {
   render() {
     return (
       <div className={styles.page_index}>
-        <nav className="nav justify-content-end">
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link active"
-            href="https://github.com/zeeshanu/learn-regex/blob/master/README-cn.md"
-          >
-            Learn
-          </a>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link"
-            href="https://github.com/tolerance-go/regexp-store/edit/master/src/assets/regexs.js"
-          >
-            Upload
-          </a>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link"
-            href="https://github.com/tolerance-go/regexp-store"
-          >
-            Github
-          </a>
-        </nav>
-
-        <div className="container">
+        <div className="container-fluid">
+          <nav className="nav justify-content-end">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link active"
+              href="https://github.com/zeeshanu/learn-regex/blob/master/README-cn.md"
+            >
+              Learn
+            </a>
+            <a
+              onClick={() => {}}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link"
+              href="https://github.com/tolerance-go/regexp-store/edit/master/src/assets/regexs.js"
+            >
+              Upload
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link"
+              href="https://github.com/tolerance-go/regexp-store"
+            >
+              Github
+            </a>
+          </nav>
           <div className="row justify-content-center logo">
             <img src={require('../assets/imgs/logo.jpg')} alt="logo" className="logo-img" />
             <div className="log-beta">beta</div>
           </div>
 
-          <div className="row justify-content-center">
-            <div className="console col-10 col-md-8" id="console">
-              <div className="console-input_wrap console-item">
-                <div className="console-text">></div>
+          <div id="operator">
+            <div className="row justify-content-center">
+              <div className="search col-8 col-md-8">
                 <input
-                  onKeyDown={this.onConsolePress}
                   type="text"
-                  className="console-input"
-                  id="input"
-                  placeholder="exec..."
+                  className="search-input"
+                  placeholder="keywords..."
+                  ref={node => (this.$search = node)}
+                  onKeyDown={e => {
+                    if (e.keyCode === 13) {
+                      this.onSearch();
+                    }
+                  }}
                 />
+                <div onClick={this.onSearch} className="search-btn">
+                  search
+                </div>
               </div>
-              <QueueAnim>
-                {this.state.results.map((result, k) => {
-                  return (
-                    <div key={result.timestamp} className="console-result console-item result">
-                      <div>
-                        <div className="console-text">=</div>
-                        {result.content}
-                      </div>
-                      <div
-                        className="console-remove"
-                        onClick={() => {
-                          this.setState({
-                            results: this.state.results.filter((item, index) => {
-                              return index !== k;
-                            }),
-                          });
-                        }}
-                      >
-                        -
-                      </div>
-                    </div>
-                  );
-                })}
-              </QueueAnim>
             </div>
-          </div>
-
-          <div className="row justify-content-center">
-            <div className="search col-10 col-md-8">
-              <input
-                type="text"
-                className="search-input"
-                placeholder="keywords"
-                ref={node => (this.$search = node)}
-                onKeyDown={e => {
-                  if (e.keyCode === 13) {
-                    this.onSearch();
-                  }
-                }}
-              />
-              <div onClick={this.onSearch} className="search-btn">
-                search
+            <div className="row justify-content-center">
+              <div className="console col-8 col-md-8" id="console">
+                <div className="console-input_wrap console-item">
+                  <div className="console-text">></div>
+                  <input
+                    onKeyDown={this.onConsolePress}
+                    type="text"
+                    className="console-input"
+                    id="input_regexp"
+                    placeholder="input regexp..."
+                  />
+                  <div className="console-text">.test (</div>
+                  <input
+                    onKeyDown={this.onConsolePress}
+                    type="text"
+                    className="console-input"
+                    id="input_params"
+                    placeholder="input test content... &amp; press the enter"
+                  />
+                  <div className="console-text">)</div>
+                  <div className="console-text" />
+                </div>
+                <QueueAnim>
+                  {this.state.results.map((result, k) => {
+                    return (
+                      <div key={result.timestamp} className="console-result console-item result">
+                        <div>
+                          <div className="console-text">=</div>
+                          {result.content}
+                        </div>
+                        <div
+                          className="console-remove"
+                          onClick={() => {
+                            this.setState({
+                              results: this.state.results.filter((item, index) => {
+                                return index !== k;
+                              }),
+                            });
+                          }}
+                        >
+                          -
+                        </div>
+                      </div>
+                    );
+                  })}
+                </QueueAnim>
               </div>
             </div>
           </div>
@@ -243,7 +314,7 @@ export default class Index extends React.Component {
           >
             {this.state.show_data_ource.map((item, key) => {
               return (
-                <div key={item.id} className="cell_wrap col-md-3 col-sm-12">
+                <div key={key + this.state.search_num} className="cell_wrap col-md-3 col-sm-12">
                   <div className="cell">
                     <div
                       className={classnames('avatar', {
@@ -276,7 +347,7 @@ export default class Index extends React.Component {
                       />
                       <div className="avatar-name">
                         {this.state.user_infos[item.author] &&
-                          this.state.user_infos[item.author].nickname}
+                          this.state.user_infos[item.author].username}
                       </div>
                     </div>
                     <h5>{item.title}</h5>
@@ -319,8 +390,8 @@ export default class Index extends React.Component {
                         id={'action_' + item.id}
                         onClick={() => {
                           this.toggleTooltip('#action_' + item.id);
-                          this.copy(item.regex);
-                          document.getElementById('input').scrollIntoViewIfNeeded(true);
+                          this.copy(item.regex, 'input_regexp');
+                          document.getElementById('input_regexp').scrollIntoViewIfNeeded(true);
                         }}
                       >
                         <img
@@ -330,10 +401,19 @@ export default class Index extends React.Component {
                         />
                         <div className="cell-actions-item-text">copy</div>
                       </div>
-                      {/* <div className="cell-actions-item">
-                        <img src={require("../assets/imgs/like.png")} alt="like" className="cell-actions-item-icon" />
-                        <div className="cell-actions-item-text">like</div>
-                      </div> */}
+                      <div
+                        className="cell-actions-item"
+                        onClick={() => {
+                          this.on_like(item.id);
+                        }}
+                      >
+                        <img
+                          src={require('../assets/imgs/like.png')}
+                          alt="like"
+                          className="cell-actions-item-icon"
+                        />
+                        <div className="cell-actions-item-text">like {item.like_num}</div>
+                      </div>
                     </div>
                   </div>
                 </div>

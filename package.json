@@ -13,6 +13,7 @@
   "dependencies": {
     "animate.css": "^3.6.1",
     "classnames": "^2.2.6",
+    "jsonp": "^0.2.1",
     "lodash.unionby": "^4.8.0",
     "qs": "^6.5.2",
     "rc-queue-anim": "^1.6.4",
