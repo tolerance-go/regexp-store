@@ -275,7 +275,16 @@ export default class Index extends React.Component {
                     placeholder="input test content... &amp; press the enter"
                   />
                   <div className="console-text">)</div>
-                  <div className="console-text" />
+                  <div
+                    className="console-remove"
+                    onClick={() => {
+                      this.setState({
+                        results: [],
+                      });
+                    }}
+                  >
+                    x
+                  </div>
                 </div>
                 <QueueAnim>
                   {this.state.results.map((result, k) => {
