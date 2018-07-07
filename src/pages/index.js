@@ -219,7 +219,7 @@ export default class Index extends React.Component {
               target="_blank"
               rel="noopener noreferrer"
               className="nav-link active"
-              href="https://github.com/zeeshanu/learn-regex/blob/master/README-cn.md"
+              href="https://github.com/zeeshanu/learn-regex"
             >
               Learn
             </a>
