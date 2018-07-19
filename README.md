@@ -1,7 +1,7 @@
 # regexp-store
 search for learning regexp
 
-https://tolerance-go.github.io/regexp-store/
+[HOME](https://tolerance-go.github.io/regexp-store/) | [CHANGELOG](https://github.com/tolerance-go/regexp-store/blob/master/CHANGELOG.md)
 
 
 # License

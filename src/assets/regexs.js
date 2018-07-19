@@ -1,5 +1,9 @@
 /**
- * author is your github personal home page
+ * author(string) - is your github home page link
+ * id(number)     - is guaranteed to be unique and incremented
+ * title(string)  - can be found by searching 
+ * descs(array)   - the part of the description that reminds the user to pay attention to
+ * regex(regexp)  - regular expression
  */
 export default [
   {

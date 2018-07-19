@@ -19,5 +19,6 @@
     "rc-queue-anim": "^1.6.4",
     "react-zeroclipboard": "^0.4.1",
     "request": "^2.87.0"
-  }
+  },
+  "devDependencies": {}
 }

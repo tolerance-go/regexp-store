@@ -11,7 +11,7 @@ import request from '../request';
 const api_base =
   process.env.NODE_ENV === 'development'
     ? 'http://127.0.0.1:7001/'
-    : 'https://www.regexp-server.top';
+    : 'https://www.regexp-server.top/';
 
 export default class Index extends React.Component {
   state = {
@@ -203,7 +203,7 @@ export default class Index extends React.Component {
   render() {
     return (
       <div className={styles.page_index}>
-        <div
+        {/* <div
           className="alert alert-primary"
           role="alert"
           style={{
@@ -211,7 +211,7 @@ export default class Index extends React.Component {
           }}
         >
           https服务域名正在备案中，期间全站点赞，正则作者信息展示功能无法正常使用
-        </div>
+        </div> */}
 
         <div className="container-fluid">
           <nav className="nav justify-content-end">
