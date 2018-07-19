@@ -8,14 +8,14 @@
 export default [
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配中文字符',
+    title: '中文字符',
     // eslint-disable-next-line
     regex: /[\u4e00-\u9fa5]/,
     id: 0,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配双字节字符',
+    title: '双字节字符',
     // eslint-disable-next-line
     descs: ['包括汉字在内'],
     regex: /[^\x00-\xff]/,
@@ -23,96 +23,65 @@ export default [
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配空白行',
+    title: '空白行',
     // eslint-disable-next-line
     regex: /\n\s*\r/,
     id: 2,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配Email地址',
+    title: 'Email地址',
     // eslint-disable-next-line
     regex: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
     id: 3,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配网址URL',
-    // eslint-disable-next-line
-    regex: /[a-zA-z]+:\/\/[^\s]*/,
-    id: 4,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: '匹配国内电话号码',
+    title: '国内电话号码',
     regex: /\d{3}-\d{8}|\d{4}-\{7,8}/,
     id: 5,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配QQ号',
+    title: 'QQ号',
     regex: /[1-9][0-9]{4,}/,
     id: 6,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配中国邮政编码',
-    regex: /[1-9]\d{5}(?!\d)/,
-    id: 7,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: '匹配18位身份证号',
+    title: '18位身份证号',
     regex: /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/,
     id: 8,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配(年-月-日)格式日期',
+    title: '(年-月-日)格式日期',
     regex: /([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8])))/,
     id: 9,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配正整数',
+    title: '正整数',
     regex: /^[1-9]\d*$/,
     id: 10,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配负整数',
+    title: '负整数',
     regex: /^-[1-9]\d*$/,
     id: 11,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配整数',
+    title: '整数',
     regex: /^-?[1-9]\d*$/,
     id: 12,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '匹配非负整数（正整数 + 0）',
-    regex: /^[1-9]\d*|0$/,
-    id: 13,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: '匹配非正整数（负整数 + 0）',
-    regex: /^-[1-9]\d*|0$/,
-    id: 14,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: '匹配正浮点数',
+    title: '正浮点数',
     regex: /^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/,
     id: 15,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: '匹配负浮点数',
-    regex: /^-[1-9]\d*\.\d*|-0\.\d*[1-9]\d*$/,
-    id: 16,
   },
   {
     author: 'https://github.com/tolerance-go',
@@ -212,12 +181,6 @@ export default [
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '正浮点数',
-    regex: /^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/,
-    id: 33,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
     title: '负浮点数',
     regex: /^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$/,
     id: 34,
@@ -302,19 +265,13 @@ export default [
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: 'Email地址',
-    regex: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-    id: 48,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
     title: '域名',
     regex: /[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\/.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\/.?/,
     id: 49,
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: 'InternetURL',
+    title: 'URL',
     regex: /[a-zA-z]+:\/\/[^\s]*/,
     id: 50,
   },
@@ -344,13 +301,6 @@ export default [
     descs: ['数字，字母x结尾'],
     regex: /^([0-9]){7,18}(x|X)?$/,
     id: 54,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: '帐号是否合法',
-    descs: ['字母开头，允许5到16字节，允许字母数字下划线'],
-    regex: /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/,
-    id: 55,
   },
   {
     author: 'https://github.com/tolerance-go',
@@ -431,13 +381,6 @@ export default [
   },
   {
     author: 'https://github.com/tolerance-go',
-    title: '腾讯QQ号',
-    regex: /[1-9][0-9]{4,}/,
-    descs: ['腾讯QQ号从10000开始'],
-    id: 68,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
     title: '中国邮政编码',
     regex: /[1-9]\d{5}(?!\d)/,
     descs: ['中国邮政编码为6位数字'],
@@ -449,11 +392,5 @@ export default [
     regex: /\d+\.\d+\.\d+\.\d+/,
     descs: ['提取IP地址时有用'],
     id: 70,
-  },
-  {
-    author: 'https://github.com/tolerance-go',
-    title: 'IP地址',
-    regex: /((?:(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d))/,
-    id: 71,
   },
 ];
