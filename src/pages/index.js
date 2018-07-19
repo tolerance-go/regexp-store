@@ -6,6 +6,7 @@ import QueueAnim from 'rc-queue-anim';
 import qs from 'qs';
 import regexs from '../assets/regexs';
 import unionBy from 'lodash.unionby';
+import debounce from 'lodash.debounce';
 import request from '../request';
 
 const api_base =
@@ -100,7 +101,7 @@ export default class Index extends React.Component {
     }
   };
 
-  on_like = async id => {
+  on_like = debounce(async id => {
     const is_increment = !JSON.parse(localStorage.getItem(id + '_has_like'));
     const { success, data } = await request({
       url: api_base + 'like_change',
@@ -121,7 +122,7 @@ export default class Index extends React.Component {
       });
       localStorage.setItem(id + '_has_like', is_increment);
     }
-  };
+  }, 200);
 
   onConsolePress = e => {
     if (e.keyCode === 13) {
