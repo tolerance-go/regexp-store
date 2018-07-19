@@ -243,7 +243,7 @@ export default class Index extends React.Component {
             </a>
           </nav>
           <div className="row justify-content-center logo">
-            <img src={require('../assets/imgs/logo.jpg')} alt="logo" className="logo-img" />
+            <img src={require('../assets/imgs/logo2.jpg')} alt="logo" className="logo-img" />
             <div className="log-beta">beta</div>
           </div>
 
