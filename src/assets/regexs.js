@@ -1,4 +1,6 @@
 /**
+ * thank you very much for your contribution, making it easier to find regular expressions
+ * 
  * author(string) - is your github home page link
  * id(number)     - is guaranteed to be unique and incremented
  * title(string)  - can be found by searching 
@@ -9,14 +11,12 @@ export default [
   {
     author: 'https://github.com/tolerance-go',
     title: '中文字符',
-    // eslint-disable-next-line
     regex: /[\u4e00-\u9fa5]/,
     id: 0,
   },
   {
     author: 'https://github.com/tolerance-go',
     title: '双字节字符',
-    // eslint-disable-next-line
     descs: ['包括汉字在内'],
     regex: /[^\x00-\xff]/,
     id: 1,
@@ -24,14 +24,12 @@ export default [
   {
     author: 'https://github.com/tolerance-go',
     title: '空白行',
-    // eslint-disable-next-line
     regex: /\n\s*\r/,
     id: 2,
   },
   {
     author: 'https://github.com/tolerance-go',
     title: 'Email地址',
-    // eslint-disable-next-line
     regex: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
     id: 3,
   },
