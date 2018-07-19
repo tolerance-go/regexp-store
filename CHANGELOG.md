@@ -1,3 +1,13 @@
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/tolerance-go/regexp-store/compare/v0.5.0...v0.5.1) (2018-07-19)
+
+
+### Bug Fixes
+
+* 删除重复正则 ([a7d0b87](https://github.com/tolerance-go/regexp-store/commit/a7d0b87))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/tolerance-go/regexp-store/compare/v0.4.0...v0.5.0) (2018-07-05)
 
