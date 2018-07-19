@@ -1,3 +1,13 @@
+<a name="0.5.2"></a>
+## [0.5.2](https://github.com/tolerance-go/regexp-store/compare/v0.5.1...v0.5.2) (2018-07-19)
+
+
+### Bug Fixes
+
+* like debounce ([5ef9b0a](https://github.com/tolerance-go/regexp-store/commit/5ef9b0a))
+
+
+
 <a name="0.5.1"></a>
 ## [0.5.1](https://github.com/tolerance-go/regexp-store/compare/v0.5.0...v0.5.1) (2018-07-19)
 
