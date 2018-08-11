@@ -1,3 +1,13 @@
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/tolerance-go/regexp-store/compare/v0.6.0...v0.6.1) (2018-08-11)
+
+
+### Bug Fixes
+
+* unionBy -> union ([6887ad2](https://github.com/tolerance-go/regexp-store/commit/6887ad2))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/tolerance-go/regexp-store/compare/v0.5.3...v0.6.0) (2018-08-11)
 
