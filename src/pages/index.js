@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import QueueAnim from 'rc-queue-anim';
 import qs from 'qs';
 import regexs from '../assets/regexs';
-import unionBy from 'lodash.unionby';
+import union from 'lodash.union';
 import debounce from 'lodash.debounce';
 import request from '../request';
 
@@ -81,16 +81,18 @@ export default class Index extends React.Component {
   };
 
   fetch_user = async () => {
-    const authors = regexs.map(item => item.author).filter(item => !!item);
+    const authors = union(regexs.map(item => item.author).filter(item => !!item));
+    console.log(authors)
     const { success, data: profiles } = await request({
       url: api_base + 'github_user_infos',
       jsonp: true,
       params: {
-        urls: unionBy(authors, 'author'),
+        urls: authors
       },
     });
 
     if (success) {
+      console.log(profiles)
       const user_infos = profiles.reduce((local, meta) => {
         const { avatar, username, author } = meta;
         local[author] = { avatar, username };
