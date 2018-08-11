@@ -1,3 +1,13 @@
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/tolerance-go/regexp-store/compare/v0.5.3...v0.6.0) (2018-08-11)
+
+
+### Features
+
+* 增加手机号验证规则 ([c9aeea8](https://github.com/tolerance-go/regexp-store/commit/c9aeea8))
+
+
+
 <a name="0.5.3"></a>
 ## [0.5.3](https://github.com/tolerance-go/regexp-store/compare/v0.5.2...v0.5.3) (2018-07-19)
 
